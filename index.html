@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="RO 仙境傳說 Online：樂園 轉職抽籤：從已開放的二轉與擴充職業隨機抽一個">
+<link rel="icon" href="cat.jpg">
+<title>樂園轉職籤</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&display=swap">
+<style>
+html, body { margin: 0; }
+/* 版面：整頁貓咪照片當背景，中央一張「轉職籤」羊皮紙卡，下方兩顆按鈕；單一深色主題 */
+:root {
+  --night: #120f14;        /* 照片上的暗幕 */
+  --parchment: #f3e6c8;    /* 籤紙 */
+  --ink: #2b1d14;          /* 籤紙上的字 */
+  --ink-soft: #6f5843;
+  --gold: #d9a441;         /* RO 金色邊框 / 主按鈕 */
+  --rose: #e98a9a;         /* 貓舌頭粉，用在擴充職業標籤 */
+  --on-night: #f6efe4;
+  --font-display: 'Noto Serif TC', 'Songti TC', serif;
+  --font-body: 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
+  --font-latin: 'Cinzel', 'Times New Roman', serif;
+  --cat: url("cat.jpg");
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--night);
+  color: var(--on-night);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--cat) center / cover no-repeat;
+  /* 同一張照片放大模糊當底色 */
+  filter: blur(22px) brightness(1.5);
+  transform: scale(1.15);
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(18 15 20 / 0.2) 0%, rgb(18 15 20 / 0) 30%, rgb(18 15 20 / 0.35) 55%, rgb(18 15 20 / 0.75) 100%);
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding-block: 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.portrait {
+  width: min(220px, 60vw);
+  aspect-ratio: 1;
+  max-width: 100%;
+  border-radius: 50%;
+  background: var(--cat) center 45% / cover no-repeat;
+  filter: brightness(1.45) contrast(1.05);
+  box-shadow: 0 0 0 3px var(--gold), 0 0 0 9px rgb(18 15 20 / 0.5), 0 0 0 10px var(--gold), 0 14px 30px rgb(0 0 0 / 0.5);
+  margin-bottom: -6px;
+}
+
+.heading {
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+
+.heading .eyebrow {
+  font-family: var(--font-latin);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  font-size: 12px;
+  color: var(--gold);
+}
+
+.heading h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(28px, 7vw, 40px);
+  text-wrap: balance;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.heading p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--on-night);
+  opacity: 0.85;
+}
+
+.slip {
+  width: min(360px, 100%);
+  background: var(--parchment);
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 0 0 2px var(--gold), 0 0 0 6px rgb(18 15 20 / 0.6), 0 0 0 7px var(--gold), 0 18px 40px rgb(0 0 0 / 0.55);
+  display: grid;
+  gap: 10px;
+  text-align: center;
+  transform-origin: 50% 0;
+}
+
+.slip .tag {
+  justify-self: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--parchment);
+}
+
+.slip .tag.expansion {
+  background: var(--rose);
+  color: var(--ink);
+}
+
+.slip .name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(40px, 13vw, 56px);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.slip .latin {
+  font-family: var(--font-latin);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.slip dl {
+  margin: 6px 0 0;
+  padding-top: 12px;
+  border-top: 1px dashed var(--ink-soft);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.slip dt { color: var(--ink-soft); }
+.slip dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.slip code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; }
+
+.slip.idle .name { color: var(--ink-soft); }
+
+.slip.rolling .name { filter: blur(0.6px); }
+
+.slip.landed { animation: stamp 0.45s cubic-bezier(.2,1.4,.4,1); }
+
+@keyframes stamp {
+  0% { transform: scale(1.08) rotate(-1.5deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+button {
+  font: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 2px solid var(--gold);
+  transition: transform 0.12s, opacity 0.12s;
+}
+
+button:active { transform: scale(0.96); }
+button:focus-visible { outline: 3px solid var(--on-night); outline-offset: 3px; }
+button:disabled { opacity: 0.5; cursor: default; }
+
+#draw { background: var(--gold); color: var(--ink); }
+#redraw { background: rgb(18 15 20 / 0.55); color: var(--on-night); }
+
+.pool {
+  width: min(560px, 100%);
+  background: rgb(18 15 20 / 0.62);
+  border-radius: 10px;
+  padding: 12px 14px;
+  backdrop-filter: blur(6px);
+  display: grid;
+  gap: 8px;
+}
+
+.pool h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip {
+  font-size: 13px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(246 239 228 / 0.3);
+}
+
+.chip.expansion { border-color: var(--rose); }
+.chip.hit { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 700; }
+
+.history { font-size: 12px; opacity: 0.8; text-align: center; min-height: 1em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slip.landed { animation: none; }
+}
+</style>
+
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+
+<main class="stage">
+  <div class="portrait" role="img" aria-label="吐舌頭的灰貓"></div>
+  <header class="heading">
+    <span class="eyebrow">RAGNAROK · 樂園</span>
+    <h1>今天轉什麼職？</h1>
+    <p>從 13 個二轉＋2 個擴充職業裡隨機抽一個</p>
+  </header>
+
+  <section class="slip idle" id="slip" aria-live="polite">
+    <span class="tag" id="tag">等你抽籤</span>
+    <p class="name" id="name">？？？</p>
+    <span class="latin" id="latin">JOB CHANGE</span>
+    <dl id="detail" hidden>
+      <dt>從</dt><dd id="from"></dd>
+      <dt>轉職</dt><dd id="where"></dd>
+    </dl>
+  </section>
+
+  <div class="actions">
+    <button id="draw" type="button">抽籤</button>
+    <button id="redraw" type="button" hidden>重抽</button>
+  </div>
+
+  <p class="history" id="history"></p>
+
+  <section class="pool">
+    <h2>籤筒裡的職業（2026/10 官網公告已開放）</h2>
+    <div class="chips" id="chips"></div>
+  </section>
+</main>
+
+<script>
+const JOBS = [
+  { name: '騎士', latin: 'KNIGHT', from: '劍士', where: '普隆德拉', map: 'prt_in 88 101' },
+  { name: '十字軍', latin: 'CRUSADER', from: '劍士', where: '普隆德拉', map: 'prt_cas 251 75' },
+  { name: '巫師', latin: 'WIZARD', from: '魔法師', where: '吉芬', map: 'gef_tower 111 37' },
+  { name: '賢者', latin: 'SAGE', from: '魔法師', where: '克里圖拉學院', map: 'iz_ac01 139 82' },
+  { name: '刺客', latin: 'ASSASSIN', from: '盜賊', where: '蘇克拉特沙漠', map: 'in_moc_16 19 33' },
+  { name: '流氓', latin: 'ROGUE', from: '盜賊', where: '發樂斯燈塔', map: 'in_rogue 363 122' },
+  { name: '祭司', latin: 'PRIEST', from: '服事', where: '普隆德拉', map: 'prt_church 16 41' },
+  { name: '武道家', latin: 'MONK', from: '服事', where: '聖卡畢利那修道院', map: 'monk_in 99 58' },
+  { name: '鐵匠', latin: 'BLACKSMITH', from: '商人', where: '吉芬', map: 'geffen_in 110 170' },
+  { name: '鍊金術師', latin: 'ALCHEMIST', from: '商人', where: '艾爾帕蘭', map: 'alde_alche 101 184' },
+  { name: '獵人', latin: 'HUNTER', from: '弓箭手', where: '斐揚森林', map: 'in_hunter 99 99' },
+  { name: '詩人', latin: 'BARD', from: '弓箭手', where: '克魔島', map: 'comodo 193 161' },
+  { name: '舞孃', latin: 'DANCER', from: '弓箭手', where: '克魔島', map: 'job_duncer 95 93' },
+  { name: '忍者', latin: 'NINJA', from: '初學者', where: '學院 NPC「克南」', map: 'Job Lv.10、基本技能點滿', expansion: true },
+  { name: '神槍手', latin: 'GUNSLINGER', from: '初學者', where: '鋼鐵之都 艾音布羅克', map: '', expansion: true },
+];
+
+const $ = (id) => document.getElementById(id);
+const slip = $('slip');
+const chipEls = JOBS.map((job) => {
+  const chip = document.createElement('span');
+  chip.className = 'chip' + (job.expansion ? ' expansion' : '');
+  chip.textContent = job.name;
+  $('chips').append(chip);
+  return chip;
+});
+
+const history = [];
+let current = -1;
+let rolling = false;
+
+function pickIndex(exclude) {
+  if (JOBS.length < 2) {
+    return 0;
+  }
+  let index = exclude;
+  while (index === exclude) {
+    index = Math.floor(Math.random() * JOBS.length);
+  }
+  return index;
+}
+
+function showName(job) {
+  $('name').textContent = job.name;
+  $('latin').textContent = job.latin;
+}
+
+function land(index) {
+  const job = JOBS[index];
+  current = index;
+  showName(job);
+  $('tag').textContent = job.expansion ? '擴充職業' : '二轉職業';
+  $('tag').className = 'tag' + (job.expansion ? ' expansion' : '');
+  $('from').textContent = job.from;
+  $('where').innerHTML = '';
+  $('where').append(job.where);
+  if (job.map) {
+    const code = document.createElement('code');
+    code.textContent = job.map;
+    $('where').append(document.createElement('br'), code);
+  }
+  $('detail').hidden = false;
+  chipEls.forEach((chip, i) => chip.classList.toggle('hit', i === index));
+  slip.className = 'slip';
+  void slip.offsetWidth;
+  slip.classList.add('landed');
+  history.unshift(job.name);
+  $('history').textContent = history.length > 1 ? `前幾次：${history.slice(1, 6).join('、')}` : '';
+  $('draw').hidden = true;
+  $('redraw').hidden = false;
+}
+
+function roll() {
+  if (rolling) {
+    return;
+  }
+  const target = pickIndex(current);
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) {
+    land(target);
+    return;
+  }
+  rolling = true;
+  $('draw').disabled = true;
+  $('redraw').disabled = true;
+  slip.className = 'slip rolling';
+  $('detail').hidden = true;
+  $('tag').textContent = '抽籤中…';
+  $('tag').className = 'tag';
+  let step = 0;
+  const total = 18;
+  const tick = () => {
+    const index = step === total ? target : Math.floor(Math.random() * JOBS.length);
+    showName(JOBS[index]);
+    chipEls.forEach((chip, i) => chip.classList.toggle('hit', i === index));
+    if (step === total) {
+      rolling = false;
+      $('draw').disabled = false;
+      $('redraw').disabled = false;
+      land(target);
+      return;
+    }
+    step += 1;
+    setTimeout(tick, 40 + step * step * 0.5);
+  };
+  tick();
+}
+
+$('draw').addEventListener('click', roll);
+$('redraw').addEventListener('click', roll);
+</script>
+
+</body>
+</html>
